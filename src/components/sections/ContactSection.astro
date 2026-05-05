@@ -1,0 +1,182 @@
+﻿---
+import Container from "@/components/ui/Container.astro";
+import { profile } from "@/data/profile";
+
+const emailLink =
+  profile.socials.find((social) => social.platform === "Email")?.url ?? `mailto:${profile.email}`;
+const socialOrder = ["GitHub", "LinkedIn", "Instagram", "Email"] as const;
+const contactSocials = socialOrder
+  .map((platform) => profile.socials.find((social) => social.platform === platform))
+  .filter(Boolean);
+const copyEmailValue = "ardhaincalwaofc@gmail.com";
+---
+
+<section
+  id="contact"
+  aria-labelledby="contact-heading"
+  class="reveal-on-scroll min-h-full flex items-center py-10 sm:py-12 lg:py-14"
+>
+  <Container>
+    <div class="mx-auto w-full max-w-4xl rounded-2xl border border-zinc-200 px-6 py-10 sm:px-10 sm:py-12 dark:border-zinc-800">
+      <p class="text-xs font-medium tracking-[0.16em] text-zinc-500 uppercase dark:text-zinc-400">Contact</p>
+      <h2
+        id="contact-heading"
+        class="mt-4 text-3xl leading-tight font-semibold tracking-tight text-zinc-950 sm:text-4xl dark:text-zinc-100"
+      >
+        LET’S COLLABORATE
+      </h2>
+      <p class="mt-4 max-w-2xl text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
+        I’m open to software engineering opportunities, technical collaboration, and project-based work.
+      </p>
+      <p class="mt-3 text-sm text-zinc-500 dark:text-zinc-400">The best way to reach me is by email.</p>
+
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <a
+          href={emailLink}
+          class="contact-primary-link inline-flex min-h-11 items-center gap-1 rounded-md px-6 text-base font-semibold sm:text-lg"
+        >
+          Send Email ↗
+        </a>
+        <button
+          type="button"
+          class="contact-copy-link inline-flex min-h-11 items-center rounded-md px-5 text-sm font-semibold sm:text-base"
+          data-copy-email-button
+          data-copy-email-value={copyEmailValue}
+        >
+          Copy Email
+        </button>
+      </div>
+
+      <ul class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm sm:text-base">
+        {
+          contactSocials.map((social) => (
+            <li>
+              <a
+                href={social.url}
+                target={social.platform === "Email" ? undefined : "_blank"}
+                rel={social.platform === "Email" ? undefined : "noopener noreferrer"}
+                class="contact-social-link"
+              >
+                {social.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="mt-8 border-t border-zinc-200 pt-4 dark:border-zinc-800">
+        <div class="flex flex-col gap-2 text-sm text-zinc-500 sm:flex-row sm:items-center sm:justify-between dark:text-zinc-400">
+          <p>© 2026 Ardhian Calwa Nugraha. All rights reserved.</p>
+          <a href="#hero-section" class="contact-back-link inline-flex items-center font-semibold">Back to top ↗</a>
+        </div>
+      </div>
+    </div>
+
+  </Container>
+</section>
+
+<script is:inline>
+  (() => {
+    const button = document.querySelector("[data-copy-email-button]");
+    if (!(button instanceof HTMLButtonElement)) return;
+
+    const email = button.dataset.copyEmailValue ?? "";
+    if (!email) return;
+
+    const defaultLabel = "Copy Email";
+
+    const setLabel = (label) => {
+      button.textContent = label;
+      window.setTimeout(() => {
+        button.textContent = defaultLabel;
+      }, 1500);
+    };
+
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(email);
+        setLabel("Copied");
+      } catch {
+        setLabel("Failed");
+      }
+    });
+  })();
+</script>
+
+<style>
+  .contact-primary-link,
+  .contact-social-link,
+  .contact-copy-link {
+    text-decoration: none;
+    transition: color 180ms ease;
+  }
+
+  .contact-primary-link {
+    justify-content: center;
+    background-color: #18181b;
+    border: 1px solid #18181b;
+    color: #fff !important;
+  }
+
+  .contact-social-link,
+  .contact-back-link,
+  .contact-copy-link {
+    color: rgba(15, 23, 42, 0.58);
+    text-decoration: none;
+    transition: color 180ms ease;
+  }
+
+  .contact-copy-link {
+    border: 1px solid rgba(15, 23, 42, 0.24);
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  .contact-primary-link:hover,
+  .contact-primary-link:focus-visible,
+  .contact-social-link:hover,
+  .contact-social-link:focus-visible,
+  .contact-copy-link:hover,
+  .contact-copy-link:focus-visible,
+  .contact-back-link:hover,
+  .contact-back-link:focus-visible {
+    color: rgba(15, 23, 42, 0.95);
+  }
+
+  .contact-primary-link:hover,
+  .contact-primary-link:focus-visible {
+    color: #fff !important;
+  }
+
+  :global(.dark) .contact-primary-link {
+    background-color: #f4f4f5;
+    border-color: #f4f4f5;
+    color: #18181b !important;
+  }
+
+  :global(.dark) .contact-primary-link:hover,
+  :global(.dark) .contact-primary-link:focus-visible {
+    background-color: #e4e4e7;
+    border-color: #e4e4e7;
+    color: #18181b !important;
+  }
+
+  :global(.dark) .contact-social-link,
+  :global(.dark) .contact-back-link,
+  :global(.dark) .contact-copy-link {
+    color: rgba(226, 232, 240, 0.58);
+  }
+
+  :global(.dark) .contact-copy-link {
+    border-color: rgba(226, 232, 240, 0.22);
+    background: rgba(24, 24, 27, 0.38);
+  }
+
+  :global(.dark) .contact-social-link:hover,
+  :global(.dark) .contact-social-link:focus-visible,
+  :global(.dark) .contact-copy-link:hover,
+  :global(.dark) .contact-copy-link:focus-visible,
+  :global(.dark) .contact-back-link:hover,
+  :global(.dark) .contact-back-link:focus-visible {
+    color: rgba(248, 250, 252, 0.98);
+  }
+</style>

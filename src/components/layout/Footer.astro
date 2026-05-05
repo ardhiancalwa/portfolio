@@ -1,0 +1,42 @@
+---
+import Container from "@/components/ui/Container.astro";
+import { profile } from "@/data/profile";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+  <Container class="space-y-6 py-10 sm:py-12">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div class="space-y-2">
+        <p class="text-base font-semibold text-zinc-900 dark:text-zinc-100">{profile.name}</p>
+        <p class="max-w-xl text-sm text-zinc-600 dark:text-zinc-400">{profile.headline}</p>
+      </div>
+      <p class="text-sm text-zinc-500 dark:text-zinc-500">
+        © {year}
+        {profile.name}. All rights reserved.
+      </p>
+    </div>
+
+    <ul class="flex flex-wrap items-center gap-2">
+      {
+        profile.socials.map((social) => {
+          const isExternal = social.platform !== "Email";
+
+          return (
+            <li>
+              <a
+                href={social.url}
+                target={isExternal ? "_blank" : undefined}
+                rel={isExternal ? "noopener noreferrer" : undefined}
+                class="btn-social"
+              >
+                {social.label}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </Container>
+</footer>

@@ -1,0 +1,37 @@
+---
+import Container from "@/components/ui/Container.astro";
+import SectionTitle from "@/components/ui/SectionTitle.astro";
+import { skills } from "@/data/skills";
+---
+
+<section
+  id="skills"
+  aria-labelledby="skills-heading"
+  class="py-16 sm:py-20 lg:py-24"
+>
+  <Container class="space-y-10">
+    <SectionTitle
+      id="skills-heading"
+      eyebrow="Skills"
+      title="Focused technical stack organized for fast scanning."
+      description="Core tools and technologies grouped by capability areas."
+    />
+
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      {
+        skills.map((group) => (
+          <article class="rounded-2xl bg-white/80 p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm dark:bg-zinc-900/65 dark:shadow-[0_10px_30px_rgba(2,6,23,0.35)]">
+            <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">{group.category}</h3>
+            <ul class="mt-4 flex flex-wrap gap-2">
+              {group.items.map((item) => (
+                <li class="rounded-full bg-zinc-100 px-3 py-1 text-sm text-zinc-700 dark:bg-zinc-800/85 dark:text-zinc-200">
+                  {item.name}
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </Container>
+</section>

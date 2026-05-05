@@ -1,0 +1,156 @@
+﻿---
+import { profile } from "@/data/profile";
+
+const sectionLinks = [
+  { id: "hero-section", label: "Hero" },
+  { id: "projects-section", label: "Projects" },
+  { id: "experience-section", label: "Experience" },
+  { id: "about-section", label: "About" },
+  { id: "contact-section", label: "Contact" },
+];
+
+const githubUrl = profile.socials.find((social) => social.platform === "GitHub")?.url ?? "#";
+const linkedInUrl = profile.socials.find((social) => social.platform === "LinkedIn")?.url ?? "#";
+const instagramUrl = profile.socials.find((social) => social.platform === "Instagram")?.url ?? "#";
+const mailUrl = profile.socials.find((social) => social.platform === "Email")?.url ?? "#";
+
+const railSocials = [
+  { label: "Git", ariaLabel: "GitHub", url: githubUrl, external: true },
+  { label: "In", ariaLabel: "LinkedIn", url: linkedInUrl, external: true },
+  { label: "Ig", ariaLabel: "Instagram", url: instagramUrl, external: true },
+  { label: "Mail", ariaLabel: "Email", url: mailUrl, external: false },
+];
+---
+
+<div class="onepage-rail onepage-rail-left" aria-label="Section progress">
+  <div class="section-progress" data-section-progress style="--section-progress: 20%">
+    <span class="section-progress-track" aria-hidden="true"></span>
+    <span class="section-progress-fill" aria-hidden="true"></span>
+
+    <nav class="section-progress-nav" aria-label="Section navigation">
+      {
+        sectionLinks.map((section, index) => (
+          <a
+            href={`#${section.id}`}
+            data-section-link
+            data-section-index={index}
+            aria-label={`Go to ${section.label} section`}
+          ></a>
+        ))
+      }
+    </nav>
+  </div>
+</div>
+
+<div class="onepage-rail onepage-rail-right" aria-label="Social links">
+  <nav class="social-rail" data-social-rail aria-label="Social links">
+    {
+      railSocials.map((social) => {
+        return (
+          <a
+            href={social.url}
+            target={social.external ? "_blank" : undefined}
+            rel={social.external ? "noopener noreferrer" : undefined}
+            class="social-link"
+            data-social-link
+            aria-label={`Open ${social.ariaLabel}`}
+          >
+            <span class="social-dot" aria-hidden="true"></span>
+            <span class="social-label">{social.label}</span>
+          </a>
+        );
+      })
+    }
+  </nav>
+</div>
+
+<script is:inline>
+  (() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const finePointer = window.matchMedia("(pointer: fine)").matches;
+    if (reduceMotion || !finePointer) return;
+
+    const rail = document.querySelector("[data-social-rail]");
+    if (!rail) return;
+
+    const socialLinks = Array.from(rail.querySelectorAll("[data-social-link]"));
+    if (!socialLinks.length) return;
+
+    let rafId = 0;
+    let pointerX = 0;
+    let pointerY = 0;
+    let moving = false;
+
+    const resetLinks = () => {
+      socialLinks.forEach((link) => {
+        link.style.setProperty("--social-x", "0px");
+        link.style.setProperty("--social-y", "0px");
+        link.style.setProperty("--social-scale", "1");
+        link.style.setProperty("--social-strength", "0");
+        link.classList.remove("is-nearest");
+      });
+      rail.classList.remove("is-moving");
+    };
+
+    const updateLinks = () => {
+      rafId = 0;
+      let nearest = null;
+      let strongest = -1;
+
+      socialLinks.forEach((link) => {
+        const rect = link.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const dx = pointerX - centerX;
+        const dy = pointerY - centerY;
+        const distance = Math.hypot(dx, dy);
+        const strength = Math.max(0, 1 - distance / 120);
+
+        // Keep the rail stable (no wobble): only update strength for visual emphasis.
+        link.style.setProperty("--social-x", "0px");
+        link.style.setProperty("--social-y", "0px");
+        link.style.setProperty("--social-scale", "1");
+        link.style.setProperty("--social-strength", strength.toFixed(3));
+
+        if (strength > strongest) {
+          strongest = strength;
+          nearest = link;
+        }
+      });
+
+      socialLinks.forEach((link) => link.classList.toggle("is-nearest", link === nearest));
+      if (moving) {
+        rail.classList.add("is-moving");
+      }
+    };
+
+    rail.addEventListener("pointermove", (event) => {
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      moving = true;
+      if (!rafId) {
+        rafId = window.requestAnimationFrame(updateLinks);
+      }
+    });
+
+    rail.addEventListener("pointerleave", () => {
+      moving = false;
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+      resetLinks();
+    });
+
+    socialLinks.forEach((link) => {
+      link.addEventListener("focusin", () => {
+        link.classList.add("is-nearest");
+      });
+      link.addEventListener("focusout", () => {
+        if (!moving) {
+          link.classList.remove("is-nearest");
+        }
+      });
+    });
+  })();
+</script>

@@ -1,0 +1,360 @@
+﻿---
+import Container from "@/components/ui/Container.astro";
+import SectionTitle from "@/components/ui/SectionTitle.astro";
+import { projects } from "@/data/projects";
+
+const orderedProjects = [...projects].sort((a, b) => {
+  if (a.featured !== b.featured) return a.featured ? -1 : 1;
+  return b.year - a.year;
+});
+
+const placeholderImage = "/images/projects/placeholder.svg";
+
+const landingProjects = orderedProjects.slice(0, 3).map((project) => ({
+  ...project,
+  previewImage: project.image || placeholderImage,
+  previewAlt: project.imageAlt || `Preview for ${project.title}`,
+}));
+
+const defaultProject = landingProjects[0];
+---
+
+<section
+  id="projects"
+  aria-labelledby="projects-heading"
+  class="reveal-on-scroll min-h-full flex items-center border-b border-zinc-200 py-10 sm:py-12 lg:py-14 dark:border-zinc-800"
+>
+  <Container class="flex h-full min-h-0 flex-col gap-5 lg:gap-7">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <SectionTitle
+        id="projects-heading"
+        eyebrow="SELECTED PROJECTS"
+        title="Software projects built with reliability in mind."
+        description="Selected work across backend systems, web platforms, mobile apps, API integration, testing, and deployment workflows."
+      />
+      <a
+        href="/projects"
+        class="project-text-link inline-flex items-center gap-2 text-[1rem] font-normal tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-700 dark:focus-visible:outline-zinc-200"
+      >
+        <span>View all projects</span>
+        <span class="link-arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    {
+      landingProjects.length > 0 && defaultProject ? (
+        <div class="grid min-h-0 flex-1 gap-6 lg:grid-cols-12 lg:gap-8">
+          <div class="lg:col-span-7">
+            <ol class="divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
+              {
+                landingProjects.map((project, index) => (
+                  <li>
+                    <article
+                      data-project-row
+                      data-project-index={index}
+                      data-project-title={project.title}
+                      data-project-image={project.previewImage}
+                      data-project-image-alt={project.previewAlt}
+                      data-project-meta={`${project.role} • ${project.year}`}
+                      data-project-case-study={project.caseStudyUrl ?? ""}
+                      data-project-case-study-label={project.statusBadge.label}
+                      data-project-case-study-icon={project.statusBadge.iconSrc}
+                      tabindex="0"
+                      class:list={[
+                        "project-row group py-4 sm:py-5 focus-visible:outline-none",
+                        index === 0 && "is-active",
+                      ]}
+                    >
+                      <div class="flex items-start justify-between gap-3">
+                        <h3 class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-100">
+                          {project.title}
+                        </h3>
+                        <span class="text-xs tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
+                          {project.year}
+                        </span>
+                      </div>
+
+                      <p class="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+                        {project.description}
+                      </p>
+
+                      <ul class="mt-3 flex flex-wrap gap-2">
+                        {project.techStack.slice(0, 4).map((tech) => (
+                          <li class="rounded-full border border-zinc-300 px-2.5 py-1 text-[11px] tracking-wide text-zinc-600 uppercase dark:border-zinc-700 dark:text-zinc-300">
+                            {tech}
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div class="mt-4 flex flex-wrap items-center gap-4 text-sm">
+                        {project.sourceCodeUrl ? (
+                          <a
+                            href={project.sourceCodeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Open source code for ${project.title}`}
+                            class="font-medium text-zinc-700 hover:text-zinc-950 hover:underline dark:text-zinc-300 dark:hover:text-zinc-100"
+                          >
+                            Source
+                          </a>
+                        ) : (
+                          <span class="text-zinc-400 dark:text-zinc-500">Source N/A</span>
+                        )}
+
+                        {project.demoUrl ? (
+                          <a
+                            href={project.demoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Open live demo for ${project.title}`}
+                            class="font-medium text-zinc-700 hover:text-zinc-950 hover:underline dark:text-zinc-300 dark:hover:text-zinc-100"
+                          >
+                            Demo
+                          </a>
+                        ) : (
+                          <span class="text-zinc-400 dark:text-zinc-500">Demo N/A</span>
+                        )}
+                      </div>
+
+                      <div class="mt-4 lg:hidden">
+                        <img
+                          src={project.previewImage}
+                          alt={project.previewAlt}
+                          loading="lazy"
+                          onerror={`this.onerror=null;this.src='${placeholderImage}'`}
+                          class="h-40 w-full rounded-md border border-zinc-200 object-cover dark:border-zinc-800"
+                        />
+                      </div>
+                    </article>
+                  </li>
+                ))
+              }
+            </ol>
+          </div>
+
+          <aside class="relative hidden lg:col-span-5 lg:block">
+            <div class="project-preview-panel">
+              <p class="text-xs tracking-wide text-zinc-500 uppercase dark:text-zinc-400">Preview</p>
+
+              <div class="project-preview-media-wrap mt-3 overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-800">
+                <img
+                  id="project-preview-image"
+                  src={defaultProject.previewImage}
+                  alt={defaultProject.previewAlt}
+                  class="project-preview-media h-[clamp(280px,48vh,420px)] w-full object-cover"
+                  loading="eager"
+                  decoding="async"
+                  onerror={`this.onerror=null;this.src='${placeholderImage}'`}
+                />
+              </div>
+
+              <div class="mt-3 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+                <p id="project-preview-meta">{`${defaultProject.role} • ${defaultProject.year}`}</p>
+                {defaultProject.caseStudyUrl ? (
+                  <span id="project-preview-cta" class="case-study-label inline-flex items-center pb-0.5 font-semibold tracking-wide uppercase">
+                    <span class="case-study-label-icon" aria-hidden="true">
+                      <img
+                        src={defaultProject.statusBadge.iconSrc}
+                        alt=""
+                        loading="eager"
+                        decoding="async"
+                        class="case-study-label-icon-image"
+                      />
+                    </span>
+                    <span>{defaultProject.statusBadge.label}</span>
+                  </span>
+                ) : (
+                  <span id="project-preview-cta"></span>
+                )}
+              </div>
+            </div>
+          </aside>
+        </div>
+      ) : (
+        <p class="text-sm text-zinc-600 dark:text-zinc-300">No projects available yet.</p>
+      )
+    }
+  </Container>
+</section>
+
+<script is:inline>
+  (() => {
+    const section = document.getElementById("projects");
+    if (!section) return;
+
+    const rows = Array.from(section.querySelectorAll("[data-project-row]"));
+    const previewImage = section.querySelector("#project-preview-image");
+    const previewMeta = section.querySelector("#project-preview-meta");
+    const previewCta = section.querySelector("#project-preview-cta");
+
+    if (!rows.length || !previewImage || !previewMeta || !previewCta) return;
+
+    const setActiveRow = (activeRow) => {
+      rows.forEach((row) => {
+        row.classList.toggle("is-active", row === activeRow);
+      });
+    };
+
+    const openProject = (row) => {
+      const nextCaseStudy = row.getAttribute("data-project-case-study") || "";
+      if (!nextCaseStudy) return;
+      window.location.href = nextCaseStudy;
+    };
+
+    const updatePreview = (row) => {
+      const nextTitle = row.getAttribute("data-project-title") || "";
+      const nextImage = row.getAttribute("data-project-image") || "";
+      const nextAlt = row.getAttribute("data-project-image-alt") || nextTitle;
+      const nextMeta = row.getAttribute("data-project-meta") || "";
+      const nextCaseStudy = row.getAttribute("data-project-case-study") || "";
+      const nextCaseStudyLabel = row.getAttribute("data-project-case-study-label") || "Case Study";
+      const nextCaseStudyIconSrc = row.getAttribute("data-project-case-study-icon") || "";
+
+      previewImage.classList.remove("is-visible");
+
+      window.setTimeout(() => {
+        previewImage.setAttribute("src", nextImage);
+        previewImage.setAttribute("alt", nextAlt);
+        previewImage.onerror = () => {
+          previewImage.onerror = null;
+          previewImage.setAttribute("src", "/images/projects/placeholder.svg");
+        };
+        previewMeta.textContent = nextMeta;
+        if (nextCaseStudy) {
+          previewCta.innerHTML = `<span class="case-study-label-icon" aria-hidden="true"><img src="${nextCaseStudyIconSrc}" alt="" loading="eager" decoding="async" class="case-study-label-icon-image" /></span><span>${nextCaseStudyLabel}</span>`;
+          previewCta.classList.remove("opacity-0");
+        } else {
+          previewCta.textContent = "";
+          previewCta.classList.add("opacity-0");
+        }
+        previewImage.classList.add("is-visible");
+      }, 120);
+
+      setActiveRow(row);
+    };
+
+    rows.forEach((row, index) => {
+      const handler = () => updatePreview(row);
+      row.addEventListener("mouseenter", handler);
+      row.addEventListener("focusin", handler);
+      row.addEventListener("click", (event) => {
+        const target = event.target;
+        if (target instanceof Element && target.closest("a,button")) return;
+        openProject(row);
+      });
+      row.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        const target = event.target;
+        if (target instanceof Element && target.closest("a,button")) return;
+        event.preventDefault();
+        openProject(row);
+      });
+
+      if (index === 0) {
+        row.classList.add("is-active");
+      }
+    });
+
+    previewImage.classList.add("is-visible");
+  })();
+</script>
+
+<style>
+  .project-row {
+    cursor: pointer;
+    transition: opacity 220ms ease;
+  }
+
+  .project-row[data-project-case-study=""] {
+    cursor: default;
+  }
+
+  .project-text-link {
+    color: rgba(15, 23, 42, 0.52);
+    transition:
+      color 180ms ease,
+      opacity 180ms ease;
+  }
+
+  .project-text-link:hover,
+  .project-text-link:focus-visible {
+    color: rgba(15, 23, 42, 0.92);
+  }
+
+  .project-text-link .link-arrow {
+    display: inline-block;
+    transition: transform 180ms ease;
+  }
+
+  .project-text-link:hover .link-arrow,
+  .project-text-link:focus-visible .link-arrow {
+    transform: translateX(3px);
+  }
+
+  .case-study-label {
+    color: rgba(15, 23, 42, 0.52);
+    gap: 0.35rem;
+    transition: color 180ms ease;
+  }
+
+  .case-study-label-icon {
+    width: 1rem;
+    height: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    opacity: 0.9;
+  }
+
+  .case-study-label-icon-image {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+  }
+
+  .project-row.is-active {
+    opacity: 1;
+  }
+
+  .project-row:not(.is-active) {
+    opacity: 0.75;
+  }
+
+  .project-preview-panel {
+    position: sticky;
+    top: 1rem;
+  }
+
+  .project-preview-media {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 260ms ease, transform 260ms ease;
+  }
+
+  .project-preview-media.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  :global(.dark) .project-text-link {
+    color: rgba(226, 232, 240, 0.52);
+  }
+
+  :global(.dark) .project-text-link:hover,
+  :global(.dark) .project-text-link:focus-visible {
+    color: rgba(248, 250, 252, 0.94);
+  }
+
+  :global(.dark) .case-study-label {
+    color: rgba(226, 232, 240, 0.6);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-row,
+    .project-preview-media {
+      transition: none;
+    }
+  }
+</style>

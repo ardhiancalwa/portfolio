@@ -1,0 +1,28 @@
+---
+import Container from "@/components/ui/Container.astro";
+import { projects } from "@/data/projects";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Projects" description="Selected projects and case studies.">
+  <section class="py-16">
+    <Container class="space-y-6">
+      <h1 class="text-3xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-100">Projects</h1>
+      <ul class="space-y-4">
+        {
+          projects.map((project) => (
+            <li class="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+              <a
+                href={`/projects/${project.slug}`}
+                class="font-medium text-zinc-900 hover:underline dark:text-zinc-100"
+              >
+                {project.title}
+              </a>
+              <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{project.description}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </Container>
+  </section>
+</BaseLayout>

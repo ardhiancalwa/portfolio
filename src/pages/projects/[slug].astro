@@ -1,0 +1,223 @@
+﻿---
+import Container from "@/components/ui/Container.astro";
+import { projects } from "@/data/projects";
+import ProjectLayout from "@/layouts/ProjectLayout.astro";
+
+export const getStaticPaths = () =>
+  projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+
+interface Props {
+  project: (typeof projects)[number];
+}
+
+const { project } = Astro.props as Props;
+---
+
+<ProjectLayout title={project.title} description={project.description}>
+  <Container as="section" class="mx-auto max-w-4xl space-y-10">
+    <header class="space-y-4">
+      <p class="text-xs tracking-[0.16em] text-zinc-500 uppercase dark:text-zinc-400">
+        Project Detail
+      </p>
+      <h1 class="text-3xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-100">
+        {project.title}
+      </h1>
+      <p class="max-w-3xl text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+        {project.description}
+      </p>
+      <div class="flex flex-wrap items-center gap-3 text-xs text-zinc-500 dark:text-zinc-400">
+        <span>{project.role}</span>
+        <span aria-hidden="true">|</span>
+        <span>{project.year}</span>
+        <span aria-hidden="true">|</span>
+        <span class="inline-flex items-center gap-2 font-semibold tracking-wide uppercase">
+          <img
+            src={project.statusBadge.iconSrc}
+            alt=""
+            class="h-3.5 w-3.5 object-contain"
+            loading="eager"
+            decoding="async"
+          />
+          {project.statusBadge.label}
+        </span>
+      </div>
+      <div class="flex flex-wrap items-center gap-4 text-sm">
+        {project.sourceCodeUrl ? (
+          <a
+            href={project.sourceCodeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-medium text-zinc-700 hover:text-zinc-950 hover:underline dark:text-zinc-300 dark:hover:text-zinc-100"
+          >
+            Source Code
+          </a>
+        ) : (
+          <span class="text-zinc-400 dark:text-zinc-500">Source N/A</span>
+        )}
+        {project.demoUrl ? (
+          <a
+            href={project.demoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-medium text-zinc-700 hover:text-zinc-950 hover:underline dark:text-zinc-300 dark:hover:text-zinc-100"
+          >
+            Demo
+          </a>
+        ) : (
+          <span class="text-zinc-400 dark:text-zinc-500">Demo N/A</span>
+        )}
+      </div>
+    </header>
+
+    <div class="space-y-10 border-t border-zinc-200 pt-6 dark:border-zinc-800">
+      <section class="space-y-2">
+        <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
+          Overview
+        </p>
+        <p class="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">{project.overview}</p>
+      </section>
+
+      <section class="space-y-2 border-t border-zinc-100 pt-6 dark:border-zinc-900">
+        <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
+          Objective
+        </p>
+        <p class="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+          {project.objective}
+        </p>
+      </section>
+
+      <section class="space-y-4 border-t border-zinc-100 pt-6 dark:border-zinc-900">
+        <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
+          Problem
+        </p>
+        <div class="grid gap-5 lg:grid-cols-12 lg:items-start">
+          <div class="space-y-3 lg:col-span-7">
+            <h3 class="text-2xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-100">
+              The Problem
+            </h3>
+            <p class="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+              {project.problem}
+            </p>
+          </div>
+          <div class="lg:col-span-5">
+            <div class="overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-800">
+              <img
+                src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200&auto=format&fit=crop&q=60"
+                alt="Problem context placeholder"
+                loading="lazy"
+                decoding="async"
+                class="h-56 w-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="space-y-4 border-t border-zinc-100 pt-6 dark:border-zinc-900">
+        <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
+          Process
+        </p>
+        <div class="grid gap-5 lg:grid-cols-12 lg:items-start">
+          <div class="space-y-3 lg:col-span-7">
+            <h3 class="text-2xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-100">
+              The Process
+            </h3>
+            <div class="space-y-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+              {
+                project.process.map((step) => (
+                  <p>{step}</p>
+                ))
+              }
+            </div>
+          </div>
+          <div class="lg:col-span-5">
+            <div class="overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-800">
+              <img
+                src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200&auto=format&fit=crop&q=60"
+                alt="Process flow placeholder"
+                loading="lazy"
+                decoding="async"
+                class="h-56 w-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="space-y-2 border-t border-zinc-100 pt-6 dark:border-zinc-900">
+        <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
+          Solution
+        </p>
+        <p class="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">{project.solution}</p>
+      </section>
+
+      <section class="space-y-2 border-t border-zinc-100 pt-6 dark:border-zinc-900">
+        <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
+          Key Features
+        </p>
+        <ul class="space-y-2 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+          {
+            project.keyFeatures.map((feature) => (
+              <li class="flex items-start gap-2">
+                <span class="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-400 dark:bg-zinc-500"></span>
+                <span>{feature}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="space-y-2 border-t border-zinc-100 pt-6 dark:border-zinc-900">
+        <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
+          Lessons Learned
+        </p>
+        <ul class="space-y-2 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+          {
+            project.lessonsLearned.map((lesson) => (
+              <li class="flex items-start gap-2">
+                <span class="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-400 dark:bg-zinc-500"></span>
+                <span>{lesson}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="space-y-2 border-t border-zinc-100 pt-6 dark:border-zinc-900">
+        <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
+          Tech Stack
+        </p>
+        <ul class="flex flex-wrap gap-2">
+          {
+            project.techStack.map((tech) => (
+              <li class="rounded-full border border-zinc-300 px-2.5 py-1 text-[11px] tracking-wide text-zinc-600 uppercase dark:border-zinc-700 dark:text-zinc-300">
+                {tech}
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      {project.toolsUsed && project.toolsUsed.length > 0 ? (
+        <section class="space-y-2 border-t border-zinc-100 pt-6 dark:border-zinc-900">
+          <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
+            Supporting Tools
+          </p>
+          <ul class="flex flex-wrap gap-2">
+            {
+              project.toolsUsed.map((tool) => (
+                <li class="rounded-full bg-zinc-100 px-2.5 py-1 text-[11px] tracking-wide text-zinc-700 uppercase dark:bg-zinc-900 dark:text-zinc-300">
+                  {tool}
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+      ) : null}
+    </div>
+  </Container>
+</ProjectLayout>
+

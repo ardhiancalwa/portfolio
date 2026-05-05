@@ -1,0 +1,111 @@
+---
+import Footer from "@/components/layout/Footer.astro";
+import Header from "@/components/layout/Header.astro";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  bodyClass?: string;
+  mainClass?: string;
+  hideFooter?: boolean;
+}
+
+const {
+  title = "Portfolio",
+  description = "Personal portfolio website.",
+  bodyClass = "",
+  mainClass = "",
+  hideFooter = false,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Edu+AU+VIC+WA+NT+Guides:wght@400..700&family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Manrope:wght@200..800&family=Pixelify+Sans:wght@400..700&family=Playwrite+NO:wght@100..400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Press+Start+2P&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      type="module"
+      src="https://unpkg.com/@lottiefiles/lottie-player@2.0.12/dist/lottie-player.js"
+    ></script>
+    <script is:inline>
+      (() => {
+        const storageKey = "theme";
+        const saved = localStorage.getItem(storageKey);
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const theme =
+          saved === "light" || saved === "dark" ? saved : prefersDark ? "dark" : "light";
+        document.documentElement.classList.toggle("dark", theme === "dark");
+        document.documentElement.style.colorScheme = theme;
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+  </head>
+  <body class={bodyClass}>
+    <div id="page-loader" class="page-loader" role="status" aria-live="polite" aria-label="Loading page">
+      <div class="page-loader-inner">
+        <lottie-player
+          src="/lottie/loading.json"
+          background="transparent"
+          speed="1"
+          style="width: 140px; height: 140px;"
+          loop
+          autoplay
+        ></lottie-player>
+      </div>
+    </div>
+    <div class="page-background" aria-hidden="true"></div>
+    <div class="page-content">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-zinc-950 focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-white dark:focus:bg-zinc-100 dark:focus:text-zinc-900"
+    >
+      Skip to main content
+    </a>
+    <Header />
+    <main id="main-content" class={mainClass}>
+      <slot />
+    </main>
+    {!hideFooter && <Footer />}
+    </div>
+    <script is:inline>
+      (() => {
+        const loader = document.getElementById("page-loader");
+        if (!loader) return;
+        const shownAt = Date.now();
+        const minVisibleMs = 2400;
+        let isHidden = false;
+
+        const hideLoader = () => {
+          if (isHidden) return;
+          isHidden = true;
+          loader.classList.add("is-hidden");
+          window.setTimeout(() => {
+            loader.remove();
+          }, 420);
+        };
+
+        window.addEventListener(
+          "load",
+          () => {
+            const elapsed = Date.now() - shownAt;
+            const remaining = Math.max(0, minVisibleMs - elapsed);
+            window.setTimeout(hideLoader, remaining);
+          },
+          { once: true },
+        );
+        window.setTimeout(hideLoader, 5200);
+      })();
+    </script>
+  </body>
+</html>

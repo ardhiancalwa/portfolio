@@ -1,0 +1,9 @@
+dist
+node_modules
+.astro
+pnpm-lock.yaml
+PRD.md
+README.md
+DESIGN_BRIEF.md
+PROMPT_GUIDE.md
+TASKS.md

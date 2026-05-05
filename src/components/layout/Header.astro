@@ -1,0 +1,433 @@
+﻿---
+const navItems = [
+  { label: "Projects", href: "/#projects-section", className: "" },
+  { label: "Experience", href: "/#experience-section", className: "max-[24rem]:hidden" },
+  { label: "About", href: "/#about-section", className: "max-[24rem]:hidden" },
+  { label: "Contact", href: "/#contact-section", className: "" },
+];
+---
+
+<header class="site-header pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4">
+  <nav
+    class="site-nav pointer-events-auto inline-flex w-auto max-w-[calc(100vw-2rem)] items-center gap-3.5 rounded-full bg-white/70 px-3.5 py-2.5 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-xl supports-[backdrop-filter]:bg-white/65 dark:bg-slate-900/60 dark:supports-[backdrop-filter]:bg-slate-900/55"
+    aria-label="Primary navigation"
+  >
+    <a
+      href="/"
+      class="site-logo inline-flex h-9 min-w-9 items-center justify-center rounded-full text-xl font-semibold tracking-tight text-zinc-900 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 dark:text-zinc-100 dark:focus-visible:outline-zinc-100"
+      aria-label="Go to home"
+      data-nav-link
+    >
+      C
+    </a>
+
+    <div class="inline-flex min-w-0 items-center gap-2 sm:gap-3">
+      <ul class="nav-links flex min-w-0 items-center gap-2 whitespace-nowrap sm:gap-4">
+        {
+          navItems.map((item) => (
+            <li class={item.className}>
+              <a
+                href={item.href}
+                class="nav-link inline-flex min-h-9 items-center px-1.5 text-[0.88rem] font-normal text-zinc-700 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 sm:text-[0.95rem] dark:text-zinc-200 dark:focus-visible:outline-zinc-100"
+                data-nav-link
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <button
+        id="theme-toggle"
+        type="button"
+        class="theme-toggle"
+        aria-label="Toggle theme"
+        aria-pressed="false"
+      >
+        <span class="theme-toggle-track" aria-hidden="true">
+          <span class="theme-toggle-icon theme-toggle-icon-sun" aria-hidden="true">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-sun"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"
+              ></path>
+            </svg>
+          </span>
+          <span class="theme-toggle-icon theme-toggle-icon-moon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+              <path d="M20.2 14.3A8.6 8.6 0 1 1 9.7 3.8a7.1 7.1 0 0 0 10.5 10.5z"></path>
+            </svg>
+          </span>
+          <span class="theme-toggle-thumb"></span>
+        </span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<script is:inline>
+  (() => {
+    const storageKey = "theme";
+    const button = document.getElementById("theme-toggle");
+    const navLinks = Array.from(document.querySelectorAll(".nav-link[href*='#']"));
+    const snapContainer = document.querySelector(".snap-container");
+    const snapSections = Array.from(document.querySelectorAll(".snap-section[id]"));
+    const isHomePage =
+      window.location.pathname === "/" || window.location.pathname.endsWith("/index.html");
+
+    const getTheme = () => (document.documentElement.classList.contains("dark") ? "dark" : "light");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const applyTheme = (theme) => {
+      document.documentElement.classList.toggle("dark", theme === "dark");
+      document.documentElement.style.colorScheme = theme;
+      document.documentElement.dataset.theme = theme;
+      if (!button) return;
+      const isDark = theme === "dark";
+      button.setAttribute("aria-pressed", String(isDark));
+      button.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+    };
+
+    const runThemeTransition = (nextTheme) => {
+      const root = document.documentElement;
+
+      if (button) {
+        const rect = button.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+        root.style.setProperty("--theme-toggle-x", `${x}px`);
+        root.style.setProperty("--theme-toggle-y", `${y}px`);
+      }
+
+      root.classList.add("theme-transition");
+      const cleanup = () => root.classList.remove("theme-transition");
+
+      if ("startViewTransition" in document && !reduceMotion) {
+        const transition = document.startViewTransition(() => {
+          applyTheme(nextTheme);
+          localStorage.setItem(storageKey, nextTheme);
+        });
+        transition.finished.finally(cleanup);
+        return;
+      }
+
+      applyTheme(nextTheme);
+      localStorage.setItem(storageKey, nextTheme);
+      window.setTimeout(cleanup, 520);
+    };
+
+    if (button) {
+      applyTheme(getTheme());
+      button.addEventListener("click", () => {
+        const next = getTheme() === "dark" ? "light" : "dark";
+        runThemeTransition(next);
+      });
+    }
+
+    const setActiveSection = (sectionId) => {
+      navLinks.forEach((link) => {
+        link.removeAttribute("aria-current");
+        link.classList.remove("is-section-active");
+      });
+
+      if (!sectionId || sectionId === "hero-section") return;
+
+      const activeLink = navLinks.find((link) => {
+        const href = link.getAttribute("href");
+        if (!href) return false;
+        try {
+          const url = new URL(href, window.location.origin);
+          return url.hash === `#${sectionId}`;
+        } catch {
+          return false;
+        }
+      });
+      if (!activeLink) return;
+      activeLink.setAttribute("aria-current", "true");
+      activeLink.classList.add("is-section-active");
+    };
+
+    navLinks.forEach((link) => {
+      const href = link.getAttribute("href");
+      if (!href) return;
+      const hash = (() => {
+        try {
+          return new URL(href, window.location.origin).hash;
+        } catch {
+          return "";
+        }
+      })();
+      if (!hash) return;
+      const target = document.querySelector(hash) || document.querySelector(`${hash}-section`);
+      if (!target) return;
+
+      link.addEventListener("click", (event) => {
+        if (!isHomePage) return;
+        event.preventDefault();
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        const targetId = target.getAttribute("id");
+        if (targetId) setActiveSection(targetId);
+      });
+    });
+
+    if (snapContainer && snapSections.length && "IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const activeEntry = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+          if (!activeEntry) return;
+          const activeId = activeEntry.target.getAttribute("id");
+          if (activeId) setActiveSection(activeId);
+        },
+        { root: snapContainer, threshold: [0.55, 0.6] },
+      );
+
+      snapSections.forEach((section) => observer.observe(section));
+      setActiveSection("hero-section");
+    }
+  })();
+</script>
+
+<style>
+  .site-nav {
+    position: relative;
+    isolation: isolate;
+    box-shadow:
+      0 8px 30px rgba(15, 23, 42, 0.08),
+      0 0 0 0.5px rgba(148, 163, 184, 0.12),
+      0 0 24px rgba(15, 23, 42, 0.08);
+  }
+
+  .site-logo {
+    font-family: "Press Start 2P", "Pixelify Sans", "Poppins", "Geist", sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
+
+  .site-nav::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0.28;
+    background: linear-gradient(
+      110deg,
+      rgba(15, 23, 42, 0.12) 0%,
+      rgba(15, 23, 42, 0.04) 42%,
+      rgba(15, 23, 42, 0.1) 100%
+    );
+    filter: blur(10px);
+    z-index: -1;
+  }
+
+  .nav-link {
+    color: rgba(15, 23, 42, 0.46);
+    text-decoration: none;
+    transition:
+      color 180ms ease,
+      opacity 180ms ease;
+  }
+
+  .nav-link::after {
+    content: none !important;
+  }
+
+  .nav-link:hover,
+  .nav-link:focus-visible {
+    color: rgba(15, 23, 42, 0.92);
+  }
+
+  .nav-link.is-section-active,
+  .nav-link[aria-current="true"] {
+    color: rgba(15, 23, 42, 0.92);
+  }
+
+  .theme-toggle {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .theme-toggle-track {
+    width: 48px;
+    height: 26px;
+    border-radius: 999px;
+    border: 1px solid rgba(15, 23, 42, 0.2);
+    background: rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: relative;
+    display: block;
+    padding: 2px;
+    box-shadow:
+      inset 0 0 0 0.5px rgba(255, 255, 255, 0.18),
+      0 4px 14px rgba(15, 23, 42, 0.12);
+    transition:
+      background-color 320ms ease,
+      border-color 320ms ease,
+      box-shadow 320ms ease;
+  }
+
+  .theme-toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.9);
+    transform: translateX(0);
+    transition:
+      transform 500ms cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 320ms ease,
+      border-color 320ms ease;
+    z-index: 2;
+  }
+
+  .theme-toggle-icon {
+    position: absolute;
+    top: 50%;
+    width: 13px;
+    height: 13px;
+    z-index: 3;
+    transform: translateY(-50%) rotate(0deg);
+    color: rgba(15, 23, 42, 0.7);
+    transition:
+      color 280ms ease,
+      opacity 280ms ease,
+      transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+
+  .theme-toggle-icon svg {
+    width: 100%;
+    height: 100%;
+    stroke: currentColor;
+  }
+
+  .theme-toggle-icon-sun {
+    left: 7px;
+    opacity: 0.9;
+  }
+
+  .theme-toggle-icon-moon {
+    right: 7px;
+    opacity: 0.35;
+  }
+
+  .theme-toggle[aria-pressed="false"] .theme-toggle-icon-sun {
+    color: rgba(248, 250, 252, 0.95);
+    opacity: 1;
+  }
+
+  .theme-toggle[aria-pressed="false"] .theme-toggle-icon-moon {
+    color: rgba(15, 23, 42, 0.52);
+    opacity: 0.55;
+  }
+
+  .theme-toggle[aria-pressed="true"] .theme-toggle-thumb {
+    transform: translateX(22px);
+  }
+
+  .theme-toggle[aria-pressed="true"] .theme-toggle-track {
+    border-color: rgba(244, 244, 245, 0.28);
+    background: rgba(24, 24, 27, 0.34);
+    box-shadow:
+      inset 0 0 0 0.5px rgba(244, 244, 245, 0.16),
+      0 6px 18px rgba(0, 0, 0, 0.34);
+  }
+
+  .theme-toggle[aria-pressed="true"] .theme-toggle-icon-sun {
+    opacity: 0.35;
+    transform: translateY(-50%) rotate(-18deg);
+  }
+
+  .theme-toggle[aria-pressed="true"] .theme-toggle-icon-moon {
+    color: rgba(15, 23, 42, 0.92);
+    opacity: 1;
+    transform: translateY(-50%) rotate(8deg);
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid rgba(15, 23, 42, 0.8);
+    outline-offset: 4px;
+    border-radius: 999px;
+  }
+
+  :global(.dark) .nav-link {
+    color: rgba(226, 232, 240, 0.46);
+  }
+
+  :global(.dark) .nav-link:hover,
+  :global(.dark) .nav-link:focus-visible,
+  :global(.dark) .nav-link.is-section-active,
+  :global(.dark) .nav-link[aria-current="true"] {
+    color: rgba(248, 250, 252, 0.94);
+  }
+
+  :global(.dark) .theme-toggle-thumb {
+    background: rgba(244, 244, 245, 0.9);
+  }
+
+  :global(.dark) .theme-toggle-icon {
+    color: rgba(244, 244, 245, 0.92);
+  }
+
+  :global(.dark) .theme-toggle[aria-pressed="true"] .theme-toggle-icon-sun {
+    color: #ffff;
+    opacity: 1;
+    transform: translateY(-50%) rotate(8deg);
+    filter: drop-shadow(0 0 4px rgba(250, 204, 21, 0.45));
+  }
+
+  :global(.dark) .theme-toggle[aria-pressed="false"] .theme-toggle-icon-moon {
+    opacity: 0.45;
+    transform: translateY(-50%) rotate(-12deg);
+  }
+
+  :global(.dark) .site-nav {
+    box-shadow:
+      0 8px 30px rgba(0, 0, 0, 0.6),
+      0 0 18px rgba(255, 255, 255, 0.1),
+      0 0 36px rgba(255, 255, 255, 0.07),
+      0 0 72px rgba(255, 255, 255, 0.04),
+      inset 0 0 0 0.6px rgba(255, 255, 255, 0.16);
+  }
+
+  :global(.dark) .site-nav::before {
+    opacity: 0.42;
+    background: linear-gradient(
+      115deg,
+      rgba(255, 255, 255, 0.14) 0%,
+      rgba(255, 255, 255, 0.05) 48%,
+      rgba(255, 255, 255, 0.12) 100%
+    );
+    filter: blur(14px);
+  }
+
+  :global(.dark) .theme-toggle:focus-visible {
+    outline-color: rgba(244, 244, 245, 0.9);
+  }
+
+  @media (max-width: 24rem) {
+    .site-nav {
+      gap: 0.5rem;
+      padding: 0.5rem 0.625rem;
+    }
+
+    .nav-links {
+      gap: 0.45rem;
+    }
+  }
+</style>

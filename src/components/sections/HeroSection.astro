@@ -1,0 +1,106 @@
+﻿---
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import Container from "@/components/ui/Container.astro";
+import { profile } from "@/data/profile";
+
+const heroImageSrc = "/images/hero-ardhian.png";
+const heroImagePath = fileURLToPath(
+  new URL("../../../public/images/hero-ardhian.png", import.meta.url),
+);
+const hasHeroImage = existsSync(heroImagePath);
+---
+
+<section
+  aria-labelledby="hero-title"
+  class="reveal-on-scroll flex min-h-full items-center border-b border-zinc-200 py-10 sm:py-12 lg:py-14 dark:border-zinc-800"
+>
+  <Container class="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
+    <div class="space-y-6 text-left lg:col-span-7">
+      <h1
+        id="hero-title"
+        class="hero-heading text-4xl leading-tight font-semibold tracking-tight text-zinc-950 sm:text-3xl lg:text-4xl dark:text-zinc-100"
+      >
+        <span>{profile.hero.greeting}</span>
+        <br />
+        <span>{profile.hero.introName}</span>
+      </h1>
+
+      <div class="space-y-4 text-base leading-relaxed text-zinc-600 sm:text-lg dark:text-zinc-400">
+        {profile.hero.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+
+      <div class="flex flex-wrap items-center gap-5">
+        <a
+          href="#contact-section"
+          class="hero-resume-link inline-flex items-center gap-1.5 text-base font-bold underline decoration-zinc-400 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 dark:focus-visible:outline-zinc-100"
+        >
+          <span>Connect with me</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+        <a
+          href={profile.resumeUrl}
+          target="_blank"
+          class="hero-resume-link inline-flex items-center text-base font-bold underline decoration-zinc-400 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 dark:focus-visible:outline-zinc-100"
+        >
+          {profile.hero.resumeLabel}
+        </a>
+      </div>
+    </div>
+
+    <div class="mx-auto w-full max-w-sm lg:col-span-5 lg:max-w-none">
+      <div class="relative mx-auto aspect-square w-full max-w-[430px]">
+        <div
+          aria-hidden="true"
+          class="absolute top-20 left-20 h-full w-full bg-zinc-200 dark:bg-zinc-800"
+        >
+        </div>
+
+        <div class="relative z-10 h-full w-full overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+          {
+            hasHeroImage ? (
+              <img
+                src={heroImageSrc}
+                alt="Portrait placeholder for portfolio hero visual"
+                loading="eager"
+                decoding="async"
+                class="h-full w-full object-cover"
+              />
+            ) : (
+              <div
+                role="img"
+                aria-label="Portrait placeholder for portfolio hero visual"
+                class="h-full w-full bg-gradient-to-br from-zinc-200 via-zinc-300 to-zinc-400 dark:from-zinc-800 dark:via-zinc-700 dark:to-zinc-600"
+              />
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </Container>
+</section>
+
+<style>
+  .hero-heading {
+    min-height: 2.35em;
+  }
+
+  .hero-resume-link {
+    color: rgba(15, 23, 42, 0.56);
+    transition: color 180ms ease;
+  }
+
+  .hero-resume-link:hover,
+  .hero-resume-link:focus-visible {
+    color: rgba(15, 23, 42, 0.92);
+  }
+
+  :global(.dark) .hero-resume-link {
+    color: rgba(226, 232, 240, 0.56);
+  }
+
+  :global(.dark) .hero-resume-link:hover,
+  :global(.dark) .hero-resume-link:focus-visible {
+    color: rgba(248, 250, 252, 0.94);
+  }
+</style>
