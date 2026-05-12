@@ -127,6 +127,59 @@ const project = entry.data;
     margin: 0.5rem 0 0;
   }
 
+  .project-content :global(.project-split) {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 0.5rem;
+  }
+
+  .project-content :global(.project-split-content) {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .project-content :global(.project-split-content p) {
+    margin: 0;
+  }
+
+  .project-content :global(.project-split-media img) {
+    margin-top: 0;
+    height: auto;
+    object-fit: cover;
+  }
+
+  .project-content :global(.project-chip-list),
+  .project-content :global(.project-tool-list) {
+    list-style: none;
+    padding-left: 0;
+    margin: 0.75rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .project-content :global(.project-chip) {
+    border: 1px solid rgb(212 212 216);
+    border-radius: 9999px;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(82 82 91);
+    line-height: 1.2;
+  }
+
+  .project-content :global(.project-tool-chip) {
+    border-radius: 9999px;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    color: rgb(63 63 70);
+    background: rgb(244 244 245);
+  }
+
   .project-content :global(img) {
     margin-top: 1rem;
     border: 1px solid rgb(228 228 231);
@@ -147,6 +200,24 @@ const project = entry.data;
 
   :global(.dark) .project-content :global(img) {
     border-color: rgb(63 63 70);
+  }
+
+  :global(.dark) .project-content :global(.project-chip) {
+    border-color: rgb(63 63 70);
+    color: rgb(212 212 216);
+  }
+
+  :global(.dark) .project-content :global(.project-tool-chip) {
+    background: rgba(39, 39, 42, 0.72);
+    color: rgb(212 212 216);
+  }
+
+  @media (min-width: 64rem) {
+    .project-content :global(.project-split) {
+      grid-template-columns: minmax(0, 1fr) 20rem;
+      align-items: start;
+      gap: 1.5rem;
+    }
   }
 
 </style>

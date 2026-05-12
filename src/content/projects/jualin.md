@@ -19,58 +19,80 @@ statusIcon: "/icons/project-status/academic.svg"
 
 ## Overview
 
-Jualin is a student marketplace platform combining Laravel backend, Next.js frontend, payment processing, and real-time messaging.
+An academic full-stack marketplace project built to support student buying and selling activities through a Laravel backend, Next.js frontend, Midtrans payment gateway, and Firebase real-time chat.
+
+![Jualin overview](https://res.cloudinary.com/dqj2k0khn/image/upload/v1778520236/Screenshot_2026-04-10_185602_rzplhk.png?w=1400&auto=format&fit=crop&q=60)
+
+## Objective
+
+Build a functional student marketplace platform that enables users to browse products, manage transactions, communicate in real time, and complete payments through an integrated full-stack system.
 
 ## Problem
 
-Running the project as both PM and engineer required balancing execution speed, team support, and delivery quality.
+<div class="project-split">
+  <div class="project-split-content">
+    <p>As both Project Manager and Fullstack Developer, I had to balance technical implementation with team coordination. Several team members needed support when they were confused about their tasks or when they encountered errors, so the project required consistent monitoring, communication, and daily progress tracking.</p>
+  </div>
+  <div class="project-split-media">
+    <img src="https://res.cloudinary.com/dqj2k0khn/image/upload/v1778520414/WhatsApp_Image_2026-05-12_at_12.26.24_AM_kt3bgs.jpg?w=1400&auto=format&fit=crop&q=60" alt="Jualin problem context" />
+  </div>
+</div>
 
-## Goals
+## Process
 
-- Deliver end-to-end marketplace flows for student users.
-- Integrate secure payment and real-time communication.
-- Maintain clear team coordination throughout development.
+<div class="project-split">
+  <div class="project-split-content">
+    <p>Led the team as Project Manager while also contributing as a Fullstack Developer across backend and frontend tasks.</p>
+    <p>Defined team roles, divided jobdesks, and maintained daily reports to track progress, blockers, and completed work.</p>
+    <p>Built the backend using Laravel and PostgreSQL to manage users, products, transactions, and marketplace data.</p>
+    <p>Developed the frontend using Next.js to provide a responsive marketplace interface for students.</p>
+    <p>Integrated Midtrans payment gateway to support secure and reliable transaction flow.</p>
+    <p>Implemented Firebase real-time chat to enable communication between buyers and sellers.</p>
+    <p>Supported teammates during debugging, error solving, and feature implementation to keep the project moving consistently.</p>
+  </div>
+  <div class="project-split-media">
+    <img src="https://res.cloudinary.com/dqj2k0khn/image/upload/v1778520416/WhatsApp_Image_2026-05-12_at_12.26.25_AM_v0rate.jpg?w=1400&auto=format&fit=crop&q=60" alt="Jualin process overview" />
+  </div>
+</div>
 
-## My Role
+## Solution
 
-I handled technical implementation across backend and frontend while coordinating team progress and task tracking.
-
-## Tech Stack
-
-- Laravel
-- PostgreSQL
-- Next.js
-- Firebase
-- Midtrans
+Used daily reporting and structured task tracking to ensure every role and jobdesk was handled clearly. This helped the team understand their responsibilities, identify blockers earlier, solve errors collaboratively, and deliver a strong final result that achieved the best grade in class.
 
 ## Key Features
 
-- Product listing and transaction flow for marketplace use.
-- Midtrans payment integration for checkout processing.
-- Firebase-based real-time chat between buyer and seller.
-- Daily reporting workflow for team delivery visibility.
-
-## Architecture Decisions
-
-- Split responsibilities into clear backend and frontend boundaries.
-- Adopted daily reporting to reduce hidden blockers and coordination delays.
-
-## Challenges
-
-- Maintaining engineering momentum while leading execution planning.
-- Supporting teammates through debugging across multiple modules.
-
-## Solutions
-
-- Created consistent reporting cadence and clearer task ownership.
-- Standardized troubleshooting and handoff communication across the team.
-
-## Result
-
-The project was delivered as a complete academic product and achieved top assessment outcome in class.
+- Student marketplace platform for browsing, selling, and purchasing products.
+- Laravel backend with PostgreSQL database for managing users, products, and transactions.
+- Next.js frontend for a responsive and modern marketplace interface.
+- Midtrans payment gateway integration for secure transaction processing.
+- Firebase real-time chat feature for buyer-seller communication.
+- Daily report workflow for task tracking, team coordination, and blocker monitoring.
 
 ## Lessons Learned
 
-- Team structure and communication quality directly affect technical velocity.
-- Leadership plus implementation requires strict prioritization discipline.
+- Leading a team while contributing technically requires clear communication and strong task prioritization.
+- Daily reports help make progress, blockers, and responsibilities visible to the whole team.
+- Supporting teammates during debugging improves both team performance and shared technical understanding.
+- A structured workflow can turn an academic project into a production-like development experience.
 
+## Tech Stack
+
+<ul class="project-chip-list">
+  <li class="project-chip">PHP</li>
+  <li class="project-chip">Laravel</li>
+  <li class="project-chip">PostgreSQL</li>
+  <li class="project-chip">Next.js</li>
+  <li class="project-chip">Firebase</li>
+  <li class="project-chip">Midtrans</li>
+</ul>
+
+## Supporting Tools
+
+<ul class="project-tool-list">
+  <li class="project-tool-chip">Postman</li>
+  <li class="project-tool-chip">Git</li>
+  <li class="project-tool-chip">GitHub</li>
+  <li class="project-tool-chip">Firebase Console</li>
+  <li class="project-tool-chip">Midtrans Dashboard</li>
+  <li class="project-tool-chip">Daily Report</li>
+</ul>
