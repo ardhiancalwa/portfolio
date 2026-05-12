@@ -4,3 +4,7 @@ dist
 .env
 .env.*
 !.env.example
+PRD.md
+TASKS.md
+DESIGN_BRIEF.md
+PROMPT_GUIDE.md

@@ -2,7 +2,6 @@
 import Container from "@/components/ui/Container.astro";
 import SectionTitle from "@/components/ui/SectionTitle.astro";
 import { experiences } from "@/data/experience";
-import { profile } from "@/data/profile";
 
 const featuredExperiences = experiences.slice(0, 3);
 ---
@@ -20,7 +19,7 @@ const featuredExperiences = experiences.slice(0, 3);
         description="Software engineering experience shaped by real projects, mentoring, and technical collaboration."
       />
       <a
-        href={profile.resumeUrl}
+        href="/experience"
         class="project-text-link inline-flex items-center gap-2 whitespace-nowrap text-[1rem] font-normal tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-700 dark:focus-visible:outline-zinc-200"
       >
         <span>View All Experience</span>
@@ -31,7 +30,10 @@ const featuredExperiences = experiences.slice(0, 3);
     <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {
         featuredExperiences.map((experience) => (
-          <article class="rounded-lg border border-zinc-200 p-5 dark:border-zinc-800">
+          <article
+            data-animate="experience-card"
+            class="rounded-lg border border-zinc-200 p-5 dark:border-zinc-800"
+          >
             <p class="text-xs tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
               {experience.type}
             </p>

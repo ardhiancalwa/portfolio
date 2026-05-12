@@ -1,30 +1,34 @@
-﻿---
+---
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import ScrollRails from "@/components/layout/ScrollRails.astro";
+import BlendHoverLink from "@/components/ui/BlendHoverLink.astro";
 import Container from "@/components/ui/Container.astro";
-import { projects } from "@/data/projects";
 import ProjectLayout from "@/layouts/ProjectLayout.astro";
 
-export const getStaticPaths = () =>
-  projects.map((project) => ({
-    params: { slug: project.slug },
-    props: { project },
+export const getStaticPaths = async () => {
+  const entries = await getCollection("projects");
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
   }));
+};
 
 interface Props {
-  project: (typeof projects)[number];
+  entry: CollectionEntry<"projects">;
 }
 
-const { project } = Astro.props as Props;
+const { entry } = Astro.props as Props;
+const { Content } = await entry.render();
+const project = entry.data;
 ---
 
-<ProjectLayout title={project.title} description={project.description}>
+<ProjectLayout title={project.title} description={project.description} bodyClass="rails-scroll">
+  <ScrollRails />
   <Container as="section" class="mx-auto max-w-4xl space-y-10">
     <header class="space-y-4">
-      <p class="text-xs tracking-[0.16em] text-zinc-500 uppercase dark:text-zinc-400">
-        Project Detail
-      </p>
-      <h1 class="text-3xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-100">
-        {project.title}
-      </h1>
+      <p class="text-xs tracking-[0.16em] text-zinc-500 uppercase dark:text-zinc-400">Project Detail</p>
+      <h1 class="text-3xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-100">{project.title}</h1>
       <p class="max-w-3xl text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
         {project.description}
       </p>
@@ -32,192 +36,117 @@ const { project } = Astro.props as Props;
         <span>{project.role}</span>
         <span aria-hidden="true">|</span>
         <span>{project.year}</span>
-        <span aria-hidden="true">|</span>
-        <span class="inline-flex items-center gap-2 font-semibold tracking-wide uppercase">
-          <img
-            src={project.statusBadge.iconSrc}
-            alt=""
-            class="h-3.5 w-3.5 object-contain"
-            loading="eager"
-            decoding="async"
-          />
-          {project.statusBadge.label}
-        </span>
+        {
+          project.statusLabel ? (
+            <>
+              <span aria-hidden="true">|</span>
+              <span class="inline-flex items-center gap-2 font-semibold tracking-wide uppercase">
+                {
+                  project.statusIcon ? (
+                    <img
+                      src={project.statusIcon}
+                      alt=""
+                      class="h-5 w-5 object-contain"
+                      loading="eager"
+                      decoding="async"
+                    />
+                  ) : null
+                }
+                {project.statusLabel}
+              </span>
+            </>
+          ) : null
+        }
       </div>
       <div class="flex flex-wrap items-center gap-4 text-sm">
-        {project.sourceCodeUrl ? (
-          <a
-            href={project.sourceCodeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="font-medium text-zinc-700 hover:text-zinc-950 hover:underline dark:text-zinc-300 dark:hover:text-zinc-100"
-          >
-            Source Code
-          </a>
-        ) : (
-          <span class="text-zinc-400 dark:text-zinc-500">Source N/A</span>
-        )}
-        {project.demoUrl ? (
-          <a
-            href={project.demoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="font-medium text-zinc-700 hover:text-zinc-950 hover:underline dark:text-zinc-300 dark:hover:text-zinc-100"
-          >
-            Demo
-          </a>
-        ) : (
-          <span class="text-zinc-400 dark:text-zinc-500">Demo N/A</span>
-        )}
+        {
+          project.repoUrl ? (
+            <BlendHoverLink
+              href={project.repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-medium text-zinc-700 dark:text-zinc-300"
+              label="Source Code"
+            />
+          ) : (
+            <span class="text-zinc-400 dark:text-zinc-500">Source N/A</span>
+          )
+        }
+        {
+          project.liveUrl ? (
+            <BlendHoverLink
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-medium text-zinc-700 dark:text-zinc-300"
+              label="Demo"
+            />
+          ) : (
+            <span class="text-zinc-400 dark:text-zinc-500">Demo N/A</span>
+          )
+        }
       </div>
     </header>
 
-    <div class="space-y-10 border-t border-zinc-200 pt-6 dark:border-zinc-800">
-      <section class="space-y-2">
-        <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
-          Overview
-        </p>
-        <p class="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">{project.overview}</p>
-      </section>
-
-      <section class="space-y-2 border-t border-zinc-100 pt-6 dark:border-zinc-900">
-        <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
-          Objective
-        </p>
-        <p class="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
-          {project.objective}
-        </p>
-      </section>
-
-      <section class="space-y-4 border-t border-zinc-100 pt-6 dark:border-zinc-900">
-        <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
-          Problem
-        </p>
-        <div class="grid gap-5 lg:grid-cols-12 lg:items-start">
-          <div class="space-y-3 lg:col-span-7">
-            <h3 class="text-2xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-100">
-              The Problem
-            </h3>
-            <p class="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
-              {project.problem}
-            </p>
-          </div>
-          <div class="lg:col-span-5">
-            <div class="overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-800">
-              <img
-                src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200&auto=format&fit=crop&q=60"
-                alt="Problem context placeholder"
-                loading="lazy"
-                decoding="async"
-                class="h-56 w-full object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="space-y-4 border-t border-zinc-100 pt-6 dark:border-zinc-900">
-        <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
-          Process
-        </p>
-        <div class="grid gap-5 lg:grid-cols-12 lg:items-start">
-          <div class="space-y-3 lg:col-span-7">
-            <h3 class="text-2xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-100">
-              The Process
-            </h3>
-            <div class="space-y-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
-              {
-                project.process.map((step) => (
-                  <p>{step}</p>
-                ))
-              }
-            </div>
-          </div>
-          <div class="lg:col-span-5">
-            <div class="overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-800">
-              <img
-                src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200&auto=format&fit=crop&q=60"
-                alt="Process flow placeholder"
-                loading="lazy"
-                decoding="async"
-                class="h-56 w-full object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="space-y-2 border-t border-zinc-100 pt-6 dark:border-zinc-900">
-        <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
-          Solution
-        </p>
-        <p class="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">{project.solution}</p>
-      </section>
-
-      <section class="space-y-2 border-t border-zinc-100 pt-6 dark:border-zinc-900">
-        <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
-          Key Features
-        </p>
-        <ul class="space-y-2 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
-          {
-            project.keyFeatures.map((feature) => (
-              <li class="flex items-start gap-2">
-                <span class="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-400 dark:bg-zinc-500"></span>
-                <span>{feature}</span>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-
-      <section class="space-y-2 border-t border-zinc-100 pt-6 dark:border-zinc-900">
-        <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
-          Lessons Learned
-        </p>
-        <ul class="space-y-2 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
-          {
-            project.lessonsLearned.map((lesson) => (
-              <li class="flex items-start gap-2">
-                <span class="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-400 dark:bg-zinc-500"></span>
-                <span>{lesson}</span>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-
-      <section class="space-y-2 border-t border-zinc-100 pt-6 dark:border-zinc-900">
-        <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
-          Tech Stack
-        </p>
-        <ul class="flex flex-wrap gap-2">
-          {
-            project.techStack.map((tech) => (
-              <li class="rounded-full border border-zinc-300 px-2.5 py-1 text-[11px] tracking-wide text-zinc-600 uppercase dark:border-zinc-700 dark:text-zinc-300">
-                {tech}
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-
-      {project.toolsUsed && project.toolsUsed.length > 0 ? (
-        <section class="space-y-2 border-t border-zinc-100 pt-6 dark:border-zinc-900">
-          <p class="text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase dark:text-zinc-400">
-            Supporting Tools
-          </p>
-          <ul class="flex flex-wrap gap-2">
-            {
-              project.toolsUsed.map((tool) => (
-                <li class="rounded-full bg-zinc-100 px-2.5 py-1 text-[11px] tracking-wide text-zinc-700 uppercase dark:bg-zinc-900 dark:text-zinc-300">
-                  {tool}
-                </li>
-              ))
-            }
-          </ul>
-        </section>
-      ) : null}
-    </div>
+    <article class="project-content border-t border-zinc-200 pt-6 dark:border-zinc-800">
+      <Content />
+    </article>
   </Container>
 </ProjectLayout>
 
+<style>
+  .project-content :global(h2) {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: rgb(9 9 11);
+  }
+
+  .project-content :global(h3) {
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.125rem;
+    line-height: 1.4;
+    font-weight: 600;
+    color: rgb(24 24 27);
+  }
+
+  .project-content :global(p),
+  .project-content :global(li) {
+    color: rgb(63 63 70);
+    font-size: 0.95rem;
+    line-height: 1.75;
+  }
+
+  .project-content :global(ul) {
+    list-style: disc;
+    padding-left: 1.25rem;
+    margin: 0.5rem 0 0;
+  }
+
+  .project-content :global(img) {
+    margin-top: 1rem;
+    border: 1px solid rgb(228 228 231);
+    border-radius: 0.25rem;
+    width: 100%;
+    height: auto;
+  }
+
+  :global(.dark) .project-content :global(h2),
+  :global(.dark) .project-content :global(h3) {
+    color: rgb(244 244 245);
+  }
+
+  :global(.dark) .project-content :global(p),
+  :global(.dark) .project-content :global(li) {
+    color: rgb(212 212 216);
+  }
+
+  :global(.dark) .project-content :global(img) {
+    border-color: rgb(63 63 70);
+  }
+
+</style>

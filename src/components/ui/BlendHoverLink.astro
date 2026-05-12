@@ -1,0 +1,29 @@
+---
+interface Props {
+  href: string;
+  label: string;
+  class?: string;
+  target?: string;
+  rel?: string;
+  ariaLabel?: string;
+}
+
+const {
+  href,
+  label,
+  class: className = "font-medium text-zinc-700 dark:text-zinc-300",
+  target,
+  rel,
+  ariaLabel,
+} = Astro.props;
+---
+
+<a
+  href={href}
+  target={target}
+  rel={rel}
+  aria-label={ariaLabel}
+  class:list={["blend-hover-link", className]}
+>
+  <span>{label}</span>
+</a>

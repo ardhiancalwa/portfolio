@@ -1,8 +1,15 @@
 export type Nullable<T> = T | null;
 
+export type SocialPlatform = "GitHub" | "LinkedIn" | "Email" | "Instagram";
+
 export interface NavItem {
   label: string;
   href: string;
+}
+
+export interface SectionNavItem {
+  id: string;
+  label: string;
 }
 
 export interface BasePageProps {
@@ -11,9 +18,16 @@ export interface BasePageProps {
 }
 
 export interface SocialLink {
-  platform: "GitHub" | "LinkedIn" | "Email" | "Instagram";
+  platform: SocialPlatform;
   label: string;
   url: string;
+}
+
+export interface RailSocialLink {
+  label: string;
+  ariaLabel: string;
+  url: string;
+  external: boolean;
 }
 
 export interface Profile {
@@ -73,7 +87,9 @@ export interface Project {
   overview: string;
   objective: string;
   problem: string;
+  imageProblem: string;
   process: string[];
+  imageProcess: string;
   solution: string;
   keyFeatures: string[];
   lessonsLearned: string[];
@@ -89,6 +105,7 @@ export interface Project {
   caseStudyUrl: Nullable<string>;
   image: string;
   imageAlt: string;
+  imagePosition?: string;
 }
 
 export interface Experience {

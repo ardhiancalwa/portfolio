@@ -1,6 +1,6 @@
 ---
 import AboutSection from "@/components/sections/AboutSection.astro";
-import ExperienceSection from "@/components/sections/ArticlesSection.astro";
+import ExperienceSection from "@/components/sections/ExperienceSection.astro";
 import ContactSection from "@/components/sections/ContactSection.astro";
 import HeroSection from "@/components/sections/HeroSection.astro";
 import ProjectsSection from "@/components/sections/ProjectsSection.astro";
@@ -35,10 +35,10 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 </BaseLayout>
 
 <script is:inline>
-  (async () => {
+  (() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isDesktopOnePage = window.matchMedia("(min-width: 64rem)").matches;
 
-    const revealSections = document.querySelectorAll(".reveal-on-scroll");
     const snapContainer = document.querySelector(".snap-container");
     const snapSections = Array.from(document.querySelectorAll("[data-snap-section]"));
     const progressEl = document.querySelector("[data-section-progress]");
@@ -76,7 +76,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
       });
     }
 
-    if ("IntersectionObserver" in window && snapContainer && snapSections.length) {
+    if ("IntersectionObserver" in window && snapSections.length) {
       const sectionObserver = new IntersectionObserver(
         (entries) => {
           const visible = entries
@@ -87,56 +87,48 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
           const index = snapSections.indexOf(visible.target);
           if (index >= 0) setActiveSection(index);
         },
-        { root: snapContainer, threshold: [0.45, 0.6, 0.75] },
+        { root: isDesktopOnePage ? snapContainer : null, threshold: [0.45, 0.6, 0.75] },
       );
 
       snapSections.forEach((section) => sectionObserver.observe(section));
       setActiveSection(0);
     }
-
-    if (reduceMotion) {
-      revealSections.forEach((section) => section.classList.add("is-visible"));
-      return;
-    }
-
-    if (!revealSections.length) return;
-
-    try {
-      const { gsap } = await import("https://esm.sh/gsap@3.12.5");
-      const { ScrollTrigger } = await import("https://esm.sh/gsap@3.12.5/ScrollTrigger");
-      gsap.registerPlugin(ScrollTrigger);
-
-      gsap.set(revealSections, { autoAlpha: 0, y: 18 });
-
-      revealSections.forEach((section) => {
-        gsap.to(section, {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.6,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: section,
-            scroller: snapContainer ?? undefined,
-            start: "top 82%",
-            once: true,
-          },
-        });
-      });
-    } catch {
-      if (!("IntersectionObserver" in window)) return;
-      document.documentElement.classList.add("js-scroll-reveal");
-
-      const revealObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
-            entry.target.classList.add("is-visible");
-          });
-        },
-        { threshold: 0.2, rootMargin: "0px 0px -10% 0px" },
-      );
-
-      revealSections.forEach((section) => revealObserver.observe(section));
-    }
   })();
+</script>
+
+<script>
+  import { initAnimations } from "@/scripts/animations";
+
+  let cleanup;
+
+  const runAnimations = async () => {
+    cleanup?.();
+    cleanup = await initAnimations();
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      void runAnimations();
+    }, { once: true });
+  } else {
+    void runAnimations();
+  }
+
+  document.addEventListener("astro:before-swap", () => {
+    cleanup?.();
+    cleanup = undefined;
+  });
+
+  document.addEventListener("astro:after-swap", () => {
+    void runAnimations();
+  });
+
+  window.addEventListener(
+    "pagehide",
+    () => {
+      cleanup?.();
+      cleanup = undefined;
+    },
+    { once: true },
+  );
 </script>

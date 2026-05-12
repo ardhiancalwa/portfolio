@@ -6,6 +6,8 @@ import "../styles/global.css";
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
+  noindex?: boolean;
   bodyClass?: string;
   mainClass?: string;
   hideFooter?: boolean;
@@ -14,26 +16,55 @@ interface Props {
 const {
   title = "Portfolio",
   description = "Personal portfolio website.",
+  ogImage = "https://res.cloudinary.com/dqj2k0khn/image/upload/f_auto,q_auto,w_800/v1778599179/hero-ardhian_af0uwc.png",
+  noindex = false,
   bodyClass = "",
   mainClass = "",
   hideFooter = false,
 } = Astro.props;
+
+const bodyClasses = bodyClass.split(" ").filter(Boolean);
+const htmlExtraClasses = bodyClasses.includes("rails-scroll") ? ["rails-scroll"] : [];
+const canonicalUrl = Astro.url.href;
+const ogImageUrl = new URL(ogImage, Astro.url).href;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class:list={htmlExtraClasses}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content="id_ID" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Edu+AU+VIC+WA+NT+Guides:wght@400..700&family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Manrope:wght@200..800&family=Pixelify+Sans:wght@400..700&family=Playwrite+NO:wght@100..400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Press+Start+2P&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Press+Start+2P&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Press+Start+2P&display=swap"
+      />
+    </noscript>
     <script
       type="module"
       src="https://unpkg.com/@lottiefiles/lottie-player@2.0.12/dist/lottie-player.js"
@@ -82,8 +113,6 @@ const {
       (() => {
         const loader = document.getElementById("page-loader");
         if (!loader) return;
-        const shownAt = Date.now();
-        const minVisibleMs = 2400;
         let isHidden = false;
 
         const hideLoader = () => {
@@ -98,13 +127,11 @@ const {
         window.addEventListener(
           "load",
           () => {
-            const elapsed = Date.now() - shownAt;
-            const remaining = Math.max(0, minVisibleMs - elapsed);
-            window.setTimeout(hideLoader, remaining);
+            hideLoader();
           },
           { once: true },
         );
-        window.setTimeout(hideLoader, 5200);
+        window.setTimeout(hideLoader, 2500);
       })();
     </script>
   </body>

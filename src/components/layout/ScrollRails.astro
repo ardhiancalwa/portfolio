@@ -1,0 +1,47 @@
+---
+import SocialRail from "@/components/layout/SocialRail.astro";
+import { getRailSocialLinks } from "@/data/socials";
+import { profile } from "@/data/profile";
+
+const railSocials = getRailSocialLinks(profile.socials);
+---
+
+<div class="onepage-rail onepage-rail-left" aria-label="Scroll progress">
+  <div class="section-progress" data-scroll-progress style="--section-progress: 0%">
+    <span class="section-progress-track" aria-hidden="true"></span>
+    <span class="section-progress-fill" aria-hidden="true"></span>
+  </div>
+</div>
+
+<div class="onepage-rail onepage-rail-right" aria-label="Social links">
+  <SocialRail socials={railSocials} />
+</div>
+
+<script is:inline>
+  (() => {
+    const progressEl = document.querySelector("[data-scroll-progress]");
+    if (!progressEl) return;
+
+    const getScrollProgress = () => {
+      const root = document.scrollingElement || document.documentElement;
+      const maxScroll = Math.max(1, root.scrollHeight - root.clientHeight);
+      const ratio = root.scrollTop / maxScroll;
+      return Math.max(0, Math.min(1, ratio)) * 100;
+    };
+
+    let rafId = 0;
+    const update = () => {
+      rafId = 0;
+      progressEl.style.setProperty("--section-progress", `${getScrollProgress()}%`);
+    };
+
+    const schedule = () => {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+  })();
+</script>

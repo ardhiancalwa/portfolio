@@ -78,6 +78,15 @@ body {
   margin: 0;
 }
 
+.rails-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.rails-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 .page-background {
   position: fixed;
   inset: 0;
@@ -118,6 +127,7 @@ body {
   z-index: 9999;
   display: grid;
   place-items: center;
+  pointer-events: none;
   background: rgba(250, 250, 250, 0.98);
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
@@ -265,20 +275,18 @@ body {
 }
 
 .onepage-body {
-  height: 100svh;
-  overflow: hidden;
+  overflow-x: clip;
 }
 
 .onepage-body .page-content {
-  height: 100svh;
+  min-height: 100svh;
 }
 
 .snap-container {
-  height: 100svh;
-  overflow-y: scroll;
-  overscroll-behavior-y: contain;
+  overflow-y: visible;
+  overscroll-behavior-y: auto;
   scroll-behavior: smooth;
-  scroll-snap-type: y proximity;
+  scroll-snap-type: none;
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -288,11 +296,11 @@ body {
 }
 
 .snap-section {
-  min-height: 100svh;
-  height: 100svh;
-  overflow: hidden;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+  min-height: auto;
+  height: auto;
+  overflow: visible;
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
 }
 
 @media (min-width: 48rem) {
@@ -300,8 +308,74 @@ body {
     display: block;
   }
 
+  .rails-scroll #main-content {
+    padding-left: clamp(2.75rem, 5.5vw, 4.75rem);
+    padding-right: clamp(4.75rem, 10vw, 7.5rem);
+  }
+
+  .onepage-body .snap-container {
+    padding-left: clamp(2.75rem, 5.5vw, 4.75rem);
+    padding-right: clamp(4.75rem, 10vw, 7.5rem);
+  }
+}
+
+@media (min-width: 48rem) and (max-width: 63.9375rem) {
+  .onepage-rail-left {
+    left: 0.65rem;
+  }
+
+  .onepage-rail-right {
+    right: 0.65rem;
+    width: 64px;
+  }
+
+  .social-rail {
+    gap: 1.1rem;
+  }
+
+  .social-link {
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+  }
+}
+
+@media (min-width: 64rem) {
+  .onepage-body {
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .onepage-body .page-content {
+    height: 100svh;
+  }
+
   .snap-container {
+    height: 100svh;
+    overflow-y: scroll;
+    overscroll-behavior-y: contain;
     scroll-snap-type: y mandatory;
+  }
+
+  .snap-section {
+    min-height: 100svh;
+    height: 100svh;
+    overflow: hidden;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .onepage-body .snap-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .onepage-rail {
+    display: block;
+  }
+
+  .rails-scroll #main-content {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 
@@ -346,6 +420,60 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+.blend-hover-link {
+  position: relative;
+  padding: 0 10px;
+  color: inherit;
+  text-decoration: none;
+  isolation: isolate;
+  transition: color 0.3s;
+}
+
+.blend-hover-link > span {
+  position: relative;
+  z-index: 1;
+}
+
+.blend-hover-link::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 100%;
+  content: "";
+  background-color: #000;
+  transition: width 0.3s;
+  z-index: 0;
+}
+
+.blend-hover-link:hover,
+.blend-hover-link:focus-visible {
+  color: #fff;
+}
+
+.blend-hover-link:hover::before,
+.blend-hover-link:focus-visible::before {
+  width: 100%;
+}
+
+.blend-hover-link:focus-visible {
+  outline: 2px solid rgba(15, 23, 42, 0.65);
+  outline-offset: 3px;
+}
+
+.dark .blend-hover-link::before {
+  background-color: #fff;
+}
+
+.dark .blend-hover-link:hover,
+.dark .blend-hover-link:focus-visible {
+  color: #110f1b;
+}
+
+.dark .blend-hover-link:focus-visible {
+  outline-color: rgba(244, 244, 245, 0.85);
 }
 
 :focus-visible {
@@ -404,6 +532,11 @@ a {
   }
 
   .section-progress-fill {
+    transition: none !important;
+  }
+
+  .blend-hover-link,
+  .blend-hover-link::before {
     transition: none !important;
   }
 

@@ -1,0 +1,85 @@
+---
+import Container from "@/components/ui/Container.astro";
+import ScrollRails from "@/components/layout/ScrollRails.astro";
+import { experiences } from "@/data/experience";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Experience"
+  description="Professional and leadership experiences."
+  bodyClass="rails-scroll"
+>
+  <ScrollRails />
+  <section class="py-16">
+    <Container class="space-y-6">
+      <h1 class="text-3xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-100">Experience</h1>
+      <p class="max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
+        A complete list of engineering, mentoring, and leadership experiences.
+      </p>
+
+      <ul class="space-y-4">
+        {
+          experiences.map((experience) => (
+            <li class="experience-card rounded-lg border border-zinc-200 p-4 dark:border-zinc-800 sm:p-5">
+              <article class="space-y-4">
+                <div class="flex flex-wrap items-center gap-2">
+                  <h2 class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-100">
+                    {experience.role}
+                  </h2>
+                  <span class="text-xs text-zinc-400 dark:text-zinc-500">|</span>
+                  <span class="text-xs tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
+                    {experience.type}
+                  </span>
+                </div>
+
+                <div class="space-y-1">
+                  <p class="text-sm text-zinc-700 dark:text-zinc-300">{experience.company}</p>
+                  <p class="text-xs text-zinc-500 dark:text-zinc-400">
+                    {experience.period} | {experience.location}
+                  </p>
+                </div>
+
+                <p class="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">{experience.summary}</p>
+
+                <ul class="list-disc space-y-2 pl-5 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+                  {experience.highlights.map((highlight) => <li>{highlight}</li>)}
+                </ul>
+
+                <ul class="flex flex-wrap gap-2">
+                  {experience.techStack.map((tech) => (
+                    <li class="rounded-full border border-zinc-300 px-2.5 py-1 text-[11px] tracking-wide text-zinc-600 uppercase dark:border-zinc-700 dark:text-zinc-300">
+                      {tech}
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            </li>
+          ))
+        }
+      </ul>
+    </Container>
+  </section>
+</BaseLayout>
+
+<style>
+  .experience-card {
+    transition: border-color 180ms ease;
+  }
+
+  .experience-card:hover,
+  .experience-card:focus-within {
+    border-color: rgba(15, 23, 42, 0.35);
+  }
+
+  :global(.dark) .experience-card:hover,
+  :global(.dark) .experience-card:focus-within {
+    border-color: rgba(244, 244, 245, 0.38);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .experience-card {
+      transition: none;
+    }
+  }
+</style>
